@@ -111,7 +111,7 @@ namespace Apt.Unity.Projection
                 cam.worldToCameraMatrix = M * R * T;
 
                 cam.projectionMatrix = P;
-                this.cam.SetStereoProjectionMatrix(Camera.StereoscopicEye.Left, P);
+                //this.cam.SetStereoProjectionMatrix(Camera.StereoscopicEye.Left, P);
 
                 
                 
