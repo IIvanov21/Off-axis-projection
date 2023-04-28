@@ -20,7 +20,6 @@ namespace Apt.Unity.Projection
         public bool DrawGizmos = true;
 
 
-        private Vector3 eyePos;
         //From eye to projection screen corners
         private float n, f;
 
@@ -32,12 +31,26 @@ namespace Apt.Unity.Projection
         Vector3 viewDir;
 
         private Camera cam;
-    
+        [SerializeField] private Camera camLeft;
+        [SerializeField] private Camera camRight;
+
+        [SerializeField] private bool isStereoEnabled = true;
+        private float ipd = 0.065f;
 
         private void Awake()
         {
             cam = GetComponent<Camera>();
             
+            if(isStereoEnabled)
+            {
+                cam.enabled = false;
+                camLeft.enabled = true; camRight.enabled = true;
+            }
+            else
+            {
+                cam.enabled = true;
+                camLeft.enabled = false;camRight.enabled = false;
+            }
         }
 
 
@@ -64,10 +77,46 @@ namespace Apt.Unity.Projection
             }
         }
 
-        
+        private void Update()
+        {
+            if(Input.GetKeyDown(KeyCode.P))
+            {
+                isStereoEnabled = !isStereoEnabled;
+                if (isStereoEnabled)
+                {
+                    cam.enabled = false;
+                    camLeft.enabled = true; camRight.enabled = true;
+                }
+                else
+                {
+                    cam.enabled = true;
+                    camLeft.enabled = false; camRight.enabled = false;
+                }
+            }
+        }
+
         private void LateUpdate()
         {
-            if(ProjectionScreen != null)
+           if(!isStereoEnabled)
+            {
+                CalculateMatrix(transform.position, cam,Camera.StereoscopicEye.Left);
+            }
+           else
+            {
+                Vector3 eyePos1=transform.position+(transform.right*(ipd/-2f));
+                Vector3 eyePos2 = transform.position + (transform.right * (ipd / 2f));
+
+                CalculateMatrix(eyePos1, camLeft,Camera.StereoscopicEye.Left);
+                CalculateMatrix(eyePos2, camRight, Camera.StereoscopicEye.Right);
+
+            }
+
+        }
+        
+        
+        void CalculateMatrix(Vector3 eyePos, Camera cam, Camera.StereoscopicEye eye)
+        {
+            if (ProjectionScreen != null)
             {
                 Vector3 pa = ProjectionScreen.BottomLeft;
                 Vector3 pb = ProjectionScreen.BottomRight;
@@ -80,7 +129,7 @@ namespace Apt.Unity.Projection
 
                 Matrix4x4 M = ProjectionScreen.M;
 
-                eyePos = transform.position;
+                //eyePos = transform.position;
 
                 //From eye to projection screen corners
                 va = pa - eyePos;
@@ -106,19 +155,18 @@ namespace Apt.Unity.Projection
 
                 //Translation to eye position
                 Matrix4x4 T = Matrix4x4.Translate(-eyePos);
-                
+
                 Matrix4x4 R = Matrix4x4.Rotate(Quaternion.Inverse(transform.rotation) * ProjectionScreen.transform.rotation);
                 cam.worldToCameraMatrix = M * R * T;
 
                 cam.projectionMatrix = P;
-                //this.cam.SetStereoProjectionMatrix(Camera.StereoscopicEye.Left, P);
+                this.cam.SetStereoProjectionMatrix(eye, P);
 
-                
-                
+
+
             }
         }
-        
-        
 
     }
+
 }

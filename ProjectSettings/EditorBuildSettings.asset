@@ -4,5 +4,14 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
-  m_configObjects: {}
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Sandbox.unity
+    guid: ade1fc2c93eb2054b9f368530de64a34
+  m_configObjects:
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: f31fb19ea1954eb4fa7d3e5aa66953c3,
+      type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 635d528e9cfc85f449c2e029f0a65229,
+      type: 2}
+    xr.sdk.mock-hmd.settings: {fileID: 11400000, guid: 944dceb88b8cc5849ad8f9e773a39038,
+      type: 2}
