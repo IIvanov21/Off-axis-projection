@@ -110,7 +110,7 @@ namespace Apt.Unity.Projection
                 Matrix4x4 R = Matrix4x4.Rotate(Quaternion.Inverse(transform.rotation) * ProjectionScreen.transform.rotation);
                 cam.worldToCameraMatrix = M * R * T;
 
-                cam.projectionMatrix = P;
+                //cam.projectionMatrix = P;
                 this.cam.SetStereoProjectionMatrix(Camera.StereoscopicEye.Left, P);
 
                 
