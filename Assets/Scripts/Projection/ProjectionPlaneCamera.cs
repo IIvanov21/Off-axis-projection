@@ -174,6 +174,10 @@ namespace Apt.Unity.Projection
             }
         }
 
+        void OnDestroy()
+        {
+            Destroy(camLeft);
+            Destroy(camRight);
+        }
     }
-
 }
