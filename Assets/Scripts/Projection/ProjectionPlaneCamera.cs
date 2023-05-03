@@ -30,25 +30,32 @@ namespace Apt.Unity.Projection
 
         Vector3 viewDir;
 
-        private Camera cam;
-        [SerializeField] private Camera camLeft;
-        [SerializeField] private Camera camRight;
+        private Camera camMono;
+        private Camera camLeft;
+        private Camera camRight;
 
         [SerializeField] private bool isStereoEnabled = true;
-        private float ipd = 0.065f;
+        [SerializeField]private float ipd = 65;
 
         private void Awake()
         {
-            cam = GetComponent<Camera>();
-            
-            if(isStereoEnabled)
+            camMono = GetComponent<Camera>();
+            camLeft=new GameObject("CameraLeft").AddComponent<Camera>();
+            camRight = new GameObject("CameraRight").AddComponent<Camera>();
+            camLeft.CopyFrom(camMono);
+            camRight.CopyFrom(camMono);
+            camLeft.depth = camRight.depth = camMono.depth;
+            camLeft.transform.parent = camRight.transform.parent=this.transform;
+            camLeft.stereoTargetEye = StereoTargetEyeMask.Left;
+            camRight.stereoTargetEye= StereoTargetEyeMask.Right;
+            if (isStereoEnabled)
             {
-                cam.enabled = false;
+                camMono.enabled = false;
                 camLeft.enabled = true; camRight.enabled = true;
             }
             else
             {
-                cam.enabled = true;
+                camMono.enabled = true;
                 camLeft.enabled = false;camRight.enabled = false;
             }
         }
@@ -84,12 +91,12 @@ namespace Apt.Unity.Projection
                 isStereoEnabled = !isStereoEnabled;
                 if (isStereoEnabled)
                 {
-                    cam.enabled = false;
+                    camMono.enabled = false;
                     camLeft.enabled = true; camRight.enabled = true;
                 }
                 else
                 {
-                    cam.enabled = true;
+                    camMono.enabled = true;
                     camLeft.enabled = false; camRight.enabled = false;
                 }
             }
@@ -99,11 +106,11 @@ namespace Apt.Unity.Projection
         {
            if(!isStereoEnabled)
             {
-                CalculateMatrix(transform.position, cam,Camera.StereoscopicEye.Left);
+                CalculateMatrix(transform.position, camMono,Camera.StereoscopicEye.Left);
             }
            else
             {
-                Vector3 eyePos1=transform.position+(transform.right*(ipd/-2f));
+                Vector3 eyePos1 = transform.position + (transform.right * (ipd / -2f));
                 Vector3 eyePos2 = transform.position + (transform.right * (ipd / 2f));
 
                 CalculateMatrix(eyePos1, camLeft,Camera.StereoscopicEye.Left);
@@ -160,7 +167,7 @@ namespace Apt.Unity.Projection
                 cam.worldToCameraMatrix = M * R * T;
 
                 cam.projectionMatrix = P;
-                this.cam.SetStereoProjectionMatrix(eye, P);
+                cam.SetStereoProjectionMatrix(eye, P);
 
 
 
