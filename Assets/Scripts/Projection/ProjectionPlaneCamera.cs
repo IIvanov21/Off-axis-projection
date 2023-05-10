@@ -35,17 +35,17 @@ namespace Apt.Unity.Projection
         [SerializeField]private Camera camRight;
 
         [SerializeField] private bool isStereoEnabled = true;
-        [SerializeField]private float ipd = 65;
+        [SerializeField]private float ipd = 0.065f;
 
         private void Awake()
         {
             camMono = GetComponent<Camera>();
-            camLeft.CopyFrom(camMono);
-            camRight.CopyFrom(camMono);
-            camLeft.depth = camRight.depth = camMono.depth;
-            camLeft.transform.parent = camRight.transform.parent=this.transform;
-            camLeft.stereoTargetEye = StereoTargetEyeMask.Left;
-            camRight.stereoTargetEye= StereoTargetEyeMask.Right;
+            //camLeft.CopyFrom(camMono);
+            //camRight.CopyFrom(camMono);
+            //camLeft.depth = camRight.depth = camMono.depth;
+            //camLeft.transform.parent = camRight.transform.parent=this.transform;
+            //camLeft.stereoTargetEye = StereoTargetEyeMask.Left;
+            //camRight.stereoTargetEye= StereoTargetEyeMask.Right;
             if (isStereoEnabled)
             {
                 camMono.enabled = false;
