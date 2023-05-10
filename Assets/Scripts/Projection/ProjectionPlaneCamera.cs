@@ -31,8 +31,8 @@ namespace Apt.Unity.Projection
         Vector3 viewDir;
 
         private Camera camMono;
-        private Camera camLeft;
-        private Camera camRight;
+        [SerializeField]private Camera camLeft;
+        [SerializeField]private Camera camRight;
 
         [SerializeField] private bool isStereoEnabled = true;
         [SerializeField]private float ipd = 65;
@@ -40,8 +40,6 @@ namespace Apt.Unity.Projection
         private void Awake()
         {
             camMono = GetComponent<Camera>();
-            camLeft=new GameObject("CameraLeft").AddComponent<Camera>();
-            camRight = new GameObject("CameraRight").AddComponent<Camera>();
             camLeft.CopyFrom(camMono);
             camRight.CopyFrom(camMono);
             camLeft.depth = camRight.depth = camMono.depth;
@@ -113,8 +111,8 @@ namespace Apt.Unity.Projection
                 Vector3 eyePos1 = transform.position + (transform.right * (ipd / -2f));
                 Vector3 eyePos2 = transform.position + (transform.right * (ipd / 2f));
 
-                CalculateMatrix(eyePos1, camLeft,Camera.StereoscopicEye.Left);
-                CalculateMatrix(eyePos2, camRight, Camera.StereoscopicEye.Right);
+                CalculateMatrix(eyePos2, camLeft,Camera.StereoscopicEye.Left);
+                CalculateMatrix(eyePos1, camRight, Camera.StereoscopicEye.Right);
 
             }
 
@@ -174,10 +172,6 @@ namespace Apt.Unity.Projection
             }
         }
 
-        void OnDestroy()
-        {
-            Destroy(camLeft);
-            Destroy(camRight);
-        }
+        
     }
 }
